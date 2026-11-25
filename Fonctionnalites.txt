@@ -1,0 +1,65 @@
+Gestionnaire de tâches : fonctionnalités et évolutions
+25 nov. 2026 · @Jean-Marie
+Affichage
+On voit toutes les tâches d'un coup d'œil et on peut ouvrir le détail de chacune.
+• Liste des tâches : les tâches sont rangées en arbre, avec leur titre, leur type, leur statut et leur échéance. Les sous-tâches apparaissent sous leur tâche parente.
+• Détail d'une tâche : un clic sur une tâche affiche toutes ses informations. Si elle demande des machines, on voit aussi les ressources (machines, cœurs, temps maximal).
+Édition
+On modifie une tâche directement, et l'application refuse les valeurs absurdes.
+• Modification directe : le titre, le statut et l'échéance se changent dans la liste, sans ouvrir de fenêtre.
+• Contrôle de saisie : un temps mal écrit ou un nombre de machines négatif est refusé, avec un message qui explique pourquoi.
+Création et suppression
+On crée trois sortes d'éléments et on peut les supprimer proprement.
+• Créer : une tâche, une chaîne de tâches ou un workflow, qu'on peut ranger sous une tâche existante pour en faire une sous-tâche.
+• Supprimer : une tâche part avec toutes ses sous-tâches, et les dépendances qui pointaient vers elle disparaissent aussi.
+Planification et déclenchement
+Une tâche dit quand et pourquoi elle démarre.
+• Exécution dans le temps : une tâche est ponctuelle ou récurrente.
+• Déclenchement par événement : une tâche démarre quand quelque chose se passe, à l'extérieur ou à l'intérieur de l'application.
+Enchaînement et dépendances
+Les tâches s'enchaînent selon des règles claires, et l'application empêche les blocages.
+• Forme d'une tâche : tâche unique, chaîne de tâches (l'une après l'autre), workflow (certaines en parallèle, certaines qui en attendent d'autres) ou tâche répétée en boucle.
+• Dépendances : une tâche peut en attendre une autre. Elle démarre quand toutes ses dépendances sont satisfaites, ou au moins une, ou selon le résultat de la précédente (réussite, échec, code retour).
+• Détection des blocages : si A attend B et B attend A, l'application le refuse avec un message clair.
+• Contrôle de concurrence : on limite le nombre d'exécutions simultanées et on évite les chevauchements.
+Suivi
+Chaque tâche garde son historique : son état (en attente, en cours, réussie, échouée), sa durée, son code de retour et son journal.
+États d'une tâche
+Une tâche passe par une suite d'états, et seul le dernier est définitif.
+• En attente : la tâche existe mais n'a pas démarré. Elle attend son tour ou ses dépendances.
+• En cours : la simulation la joue, sa durée s'écoule.
+• Réussie : elle est finie normalement, avec un code de retour « ok ».
+• Échouée : elle s'est terminée sur une erreur, avec un code de retour d'échec.
+• Annulée : l'utilisateur l'a arrêtée avant ou pendant son exécution.
+• Ignorée : elle n'a pas été jouée parce qu'une tâche dont elle dépend a échoué.
+Le trajet normal est : en attente, en cours, puis réussie ou échouée. L'état d'une chaîne, d'un workflow ou d'une tâche parente se déduit de celui de ses tâches : réussi si toutes ont réussi, échoué si l'une a échoué, en cours si l'une est en cours.
+Progression en pourcentage
+Chaque élément affiche son avancement en pourcentage, sous forme de barre, et il se met à jour tout seul.
+• Pour une tâche seule : le temps simulé écoulé divisé par sa durée prévue. Elle est à 0 % en attente et à 100 % quand elle est terminée.
+• Pour une tâche parente, une chaîne ou un workflow : la moyenne de l'avancement de ses sous-tâches ou de ses tâches.
+• Affichage visuel : une barre de progression dans la liste, à côté du pourcentage, colorée selon l'état (gris en attente, bleu en cours, vert réussie, rouge échouée). La même barre apparaît dans le détail de la tâche.
+• Mise à jour automatique : les barres avancent à chaque pas de la simulation, sans action de l'utilisateur. Elles se recalculent aussi quand on ajoute ou supprime une sous-tâche.
+• Vue d'ensemble : l'avancement global de toutes les tâches s'affiche dans la barre d'état.
+Simulation de l'exécution
+L'application ne lance aucun vrai programme : elle simule l'exécution des tâches.
+• Lancer la simulation : chaque tâche passe de « en attente » à « en cours », puis à « réussie » ou « échouée », en respectant les dépendances et l'ordre prévu.
+• Durée simulée : chaque tâche a une durée prévue, jouée en accéléré.
+• Résultat simulé : un code de retour et un journal sont produits pour chaque tâche, y compris des échecs pour tester les réactions de l'application.
+• Suivi en direct : on voit les états changer dans la liste pendant que la simulation avance.
+Recherche
+On retrouve vite une tâche.
+• Barre de recherche : recherche par titre.
+• Filtres : par statut, par type, ou les tâches en retard.
+Enregistrement des données
+On peut enregistrer toutes les tâches dans un fichier, puis les rouvrir plus tard.
+• Enregistrer : tout est sauvegardé d'un coup, dépendances comprises.
+• Ouvrir : on retrouve les tâches exactement comme on les a laissées.
+Évolutions possibles
+Ces idées viennent après le cœur du projet, si le temps le permet.
+• Planification avancée : expressions cron, intervalles fixes, créneaux horaires minimum et maximum.
+• Déclencheurs précis : arrivée d'un fichier, appel externe (webhook), fin d'une autre tâche, condition métier.
+• Nouvelles tentatives automatiques : relance après un échec, avec un délai d'attente entre chaque essai.
+• Tolérance aux pannes : bascule sur une machine de secours et reprise après incident sans perdre la planification.
+• Alertes : e-mail, Slack ou outil de supervision en cas d'anomalie.
+• Sécurité et gouvernance : droits par rôle, stockage sécurisé des mots de passe, traçabilité des modifications et des exécutions.
+• Gestion des problèmes : l'application repère une tâche trop longue ou bloquée, puis l'arrête proprement ou lance une tâche de secours.
